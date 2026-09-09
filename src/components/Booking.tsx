@@ -12,12 +12,14 @@ import {
 	UserRound,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { ironingPrices, laundryPrices } from '../data/services';
 
 const serviceOptions = [
-	'Wash & Fold',
-	'Ironing Service',
-	'Dry Cleaning',
-	'Pickup & Delivery',
+	...laundryPrices.map(({ name, price }) => ({ name, price })),
+	...ironingPrices.map(({ name, price }) => ({
+		name: `Ironing - ${name}`,
+		price,
+	})),
 ];
 
 type BookingFormValues = {
@@ -119,6 +121,26 @@ export default function Booking() {
 								</div>
 							</div>
 						))}
+					</div>
+					<div className="mt-8 rounded-xl border border-[#1478E8]/50 bg-[#031B4E]/70 p-4 sm:p-5">
+						<div className="flex items-center justify-between gap-4">
+							<h3 className="font-poppins text-sm font-semibold text-white sm:text-base">
+								Service pricing
+							</h3>
+							<span className="text-xs text-[#A8C2E3]">From ₦200</span>
+						</div>
+						<div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-[#C1D3EB] sm:text-sm">
+							{[...laundryPrices, ...ironingPrices].map(({ name, price }) => (
+								<div key={name} className="flex justify-between gap-2">
+									<span>{name}</span>
+									<strong className="text-[#66C7FF]">{price}</strong>
+								</div>
+							))}
+						</div>
+						<p className="mt-3 text-xs leading-relaxed text-[#A8C2E3]">
+							House cleaning is also available. We provide a tailored quote
+							based on the type and volume of work required.
+						</p>
 					</div>
 				</motion.div>
 
@@ -243,8 +265,8 @@ export default function Booking() {
 											Select a service
 										</option>
 										{serviceOptions.map((service) => (
-											<option key={service} value={service}>
-												{service}
+											<option key={service.name} value={service.name}>
+												{service.name} - {service.price}
 											</option>
 										))}
 									</select>

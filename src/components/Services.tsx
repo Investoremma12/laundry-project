@@ -1,47 +1,5 @@
-import washIcon from '../assets/icons/wash-icon.png';
-import ironIcon from '../assets/icons/iron-icon.png';
-import { ArrowRight, Shirt, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const services = [
-	{
-		title: 'Wash & Fold',
-		description: 'Your clothes washed, dried and neatly folded.',
-		icon: washIcon,
-		iconAlt: 'Washing machine',
-	},
-	{
-		title: 'Ironing Service',
-		description: 'Crisp, clean and perfectly pressed.',
-		icon: ironIcon,
-		iconAlt: 'Clothes iron',
-	},
-	{
-		title: 'Dry Cleaning',
-		description: 'Special care for delicate and premium fabrics.',
-		icon: Shirt,
-		iconAlt: 'Hanging shirt',
-	},
-	{
-		title: 'Pickup & Delivery',
-		description: 'We collect and deliver at your convenience.',
-		icon: Truck,
-		iconAlt: 'Delivery truck',
-	},
-];
-
-const cardVariants = {
-	hidden: { opacity: 0, y: 22 },
-	visible: (index: number) => ({
-		opacity: 1,
-		y: 0,
-		transition: {
-			delay: index * 0.1,
-			duration: 0.55,
-			ease: [0.22, 1, 0.36, 1] as const,
-		},
-	}),
-};
+import { ironingPrices, laundryPrices } from '../data/services';
 
 export default function Services() {
 	return (
@@ -74,55 +32,64 @@ export default function Services() {
 				</motion.div>
 
 				<motion.div
-					initial="hidden"
-					whileInView="visible"
+					initial={{ opacity: 0, y: 18 }}
+					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, amount: 0.15 }}
-					className="mt-10 grid w-full grid-cols-2 gap-2.5 sm:mt-12 sm:gap-4 lg:grid-cols-4 lg:gap-5"
+					transition={{ duration: 0.55, delay: 0.1 }}
+					className="mt-10 grid w-full gap-5 lg:grid-cols-[1.5fr_0.8fr]"
 				>
-					{services.map(
-						({ title, description, icon: Icon, iconAlt }, index) => {
-							const isImageIcon = typeof Icon === 'string';
-
-							return (
-								<motion.a
-									key={title}
-									href="#booking"
-									custom={index}
-									variants={cardVariants}
-									whileHover={{ y: -6, borderColor: 'rgba(41, 151, 255, 0.9)' }}
-									whileTap={{ scale: 0.98 }}
-									className="group flex min-h-56 flex-col items-center rounded-xl border border-[#1478E8]/55 bg-[#06204D]/65 px-2.5 py-5 text-center shadow-[0_12px_30px_rgba(0,0,0,0.12)] transition-colors duration-300 hover:bg-[#08275B]/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#66C7FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#031B4E] sm:min-h-64 sm:rounded-2xl sm:px-5 sm:py-6"
+					<div className="overflow-hidden rounded-xl border border-[#1478E8]/55 bg-[#06204D]/65 sm:rounded-2xl">
+						<div className="flex items-center justify-between border-b border-[#1478E8]/55 bg-[#0064FE]/80 px-4 py-3 sm:px-6">
+							<h3 className="font-poppins text-base font-semibold sm:text-lg">
+								Laundry &amp; Cleaning
+							</h3>
+							<span className="font-poppins text-xs uppercase tracking-[0.14em] text-white/70">
+								Price list
+							</span>
+						</div>
+						<div className="divide-y divide-[#2B6BB4]/35">
+							{laundryPrices.map(({ name, price }) => (
+								<div
+									key={name}
+									className="flex items-center justify-between gap-4 px-4 py-3 font-poppins text-sm sm:px-6"
 								>
-									<span className="flex h-16 items-center justify-center sm:h-20">
-										{isImageIcon ? (
-											<img
-												src={Icon}
-												alt={iconAlt}
-												className="h-14 w-14 object-contain drop-shadow-[0_0_12px_rgba(0,100,254,0.7)] sm:h-16 sm:w-16"
-											/>
-										) : (
-											<Icon
-												aria-label={iconAlt}
-												className="h-14 w-14 text-[#2997FF] drop-shadow-[0_0_12px_rgba(0,100,254,0.7)] transition-transform duration-300 group-hover:scale-110 sm:h-16 sm:w-16"
-												strokeWidth={1.7}
-											/>
-										)}
-									</span>
-									<h3 className="font-poppins text-[15px] font-semibold leading-tight sm:text-lg lg:text-xl">
-										{title}
-									</h3>
-									<p className="mt-2 max-w-52 font-poppins text-xs leading-relaxed text-white/75 sm:mt-3 sm:text-sm lg:text-base">
-										{description}
-									</p>
-									<ArrowRight
-										className="mt-auto font-bold pt-3 text-white transition-transform duration-300 group-hover:translate-x-1 sm:pt-4"
-										size={30}
-									/>
-								</motion.a>
-							);
-						},
-					)}
+									<span className="text-white/85">{name}</span>
+									<strong className="shrink-0 text-[#66C7FF]">{price}</strong>
+								</div>
+							))}
+						</div>
+					</div>
+
+					<div className="overflow-hidden rounded-xl border border-[#1478E8]/55 bg-[#06204D]/65 sm:rounded-2xl">
+						<div className="border-b border-[#1478E8]/55 bg-[#0064FE]/80 px-4 py-3 sm:px-6">
+							<h3 className="font-poppins text-base font-semibold sm:text-lg">
+								Ironing Session
+							</h3>
+						</div>
+						<div className="divide-y divide-[#2B6BB4]/35">
+							{ironingPrices.map(({ name, price }) => (
+								<div
+									key={name}
+									className="flex items-center justify-between gap-4 px-4 py-3 font-poppins text-sm sm:px-6"
+								>
+									<span className="text-white/85">{name}</span>
+									<strong className="shrink-0 text-[#66C7FF]">{price}</strong>
+								</div>
+							))}
+						</div>
+					</div>
 				</motion.div>
+
+				<motion.p
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.5, delay: 0.15 }}
+					className="mt-6 max-w-3xl text-center font-poppins text-sm leading-relaxed text-white/70 sm:text-base"
+				>
+					We also provide professional house-cleaning services. Pricing is
+					quoted based on the type and volume of items to be cleaned.
+				</motion.p>
 			</div>
 		</section>
 	);
