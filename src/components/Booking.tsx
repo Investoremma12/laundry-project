@@ -11,7 +11,7 @@ import {
 	Sparkles,
 	UserRound,
 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { ironingPrices, laundryPrices } from '../data/services';
 
 const serviceOptions = [
@@ -26,7 +26,7 @@ type BookingFormValues = {
 	name: string;
 	email: string;
 	phone: string;
-	service: string;
+	service: string[];
 	date: string;
 	time: string;
 	address: string;
@@ -57,7 +57,10 @@ export default function Booking() {
 		handleSubmit,
 		formState: { errors },
 		reset,
-	} = useForm<BookingFormValues>();
+		control,
+	} = useForm<BookingFormValues>({
+		defaultValues: { service: [] },
+	});
 
 	const onSubmit = () => {
 		setIsSubmitted(true);
@@ -246,30 +249,66 @@ export default function Booking() {
 									whileInView="visible"
 									viewport={{ once: true }}
 									variants={fieldVariants}
+									className="sm:col-span-2"
 								>
-									<label
-										htmlFor="service"
-										className="mb-2 block font-poppins text-xs font-medium text-[#C1D3EB]"
-									>
+									<p className="mb-2 font-poppins text-xs font-medium text-[#C1D3EB]">
 										Service type
-									</label>
-									<select
-										id="service"
-										className={`${inputClass} ${errors.service ? 'border-[#FF6B84]' : ''}`}
-										{...register('service', {
-											required: 'Please choose a service.',
-										})}
-										defaultValue=""
-									>
-										<option value="" disabled>
-											Select a service
-										</option>
-										{serviceOptions.map((service) => (
-											<option key={service.name} value={service.name}>
-												{service.name} - {service.price}
-											</option>
-										))}
-									</select>
+									</p>
+									<Controller
+										name="service"
+										control={control}
+										rules={{
+											validate: (value) =>
+												value.length > 0 || 'Please choose at least one service.',
+										}}
+										render={({ field }) => (
+											<div
+												className={`grid max-h-56 gap-2 overflow-y-auto rounded-xl border p-3 ${
+													errors.service
+														? 'border-[#FF6B84]'
+														: 'border-[#2B6BB4]/50'
+												}`}
+											>
+												{serviceOptions.map((service) => {
+													const isSelected = field.value.includes(service.name);
+
+													return (
+														<label
+															key={service.name}
+															className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+																isSelected
+																	? 'bg-[#0064FE]/25 text-white'
+																	: 'text-[#C1D3EB] hover:bg-[#031B4E]'
+															}`}
+														>
+															<span className="flex items-center gap-3">
+																<input
+																	type="checkbox"
+																	value={service.name}
+																	checked={isSelected}
+																	onChange={(event) => {
+																		field.onChange(
+																			event.target.checked
+																				? [...field.value, service.name]
+																				: field.value.filter(
+																					(name) => name !== service.name,
+																				),
+																		);
+																	}}
+																	onBlur={field.onBlur}
+																	className="size-4 accent-[#2997FF]"
+																/>
+																<span>{service.name}</span>
+															</span>
+															<strong className="shrink-0 text-xs text-[#66C7FF]">
+																{service.price}
+															</strong>
+														</label>
+													);
+												})}
+											</div>
+										)}
+									/>
 									<FieldError message={errors.service?.message} />
 								</motion.div>
 								<motion.div
